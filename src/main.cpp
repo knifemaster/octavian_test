@@ -18,15 +18,37 @@ const int SEGMENTS = 50;
 const float radius = 0.5f;
 const float HEIGHT_CYLINDER = 1.0f;
 
+const double PI  = 3.141592653589793238463;
+
+
 void processInput(GLFWwindow* window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
 }
 
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 }
+
+
+void generateCylinder(std::vector<float>& vertices, std::vector<unsigned int>& indices) {
+
+	for (int i = 0; i <= SEGMENTS; ++i) {
+		float angle = 2.0f * PI * i / SEGMENTS;
+		float x = RADIUS * std::cos(angle);
+		float z = RADIUS * std::sin(angle);
+
+		vertices.push_back(x);
+		vertices.push_back(HEIGHT_CYLINDER / 2.0f);
+		vertices.push_back(z);
+		vertices.push_back(x);
+		vertices.push_back(-HEIGHT_CYLINDER / 2.0f);
+		vertices.push_back(z);
+	}	
+}
+
 
 int main() {
 
