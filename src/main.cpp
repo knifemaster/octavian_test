@@ -1,151 +1,143 @@
-#define GLFW_INCLUDE_NONE
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include <iostream>
-#include <vector>
+#include <GL/glew.h>
+#include <GL/glut.h>
 #include <cmath>
-//#define GLAD_GL_IMPLEMENTATION
-//#include <glad/gl.h>
-//#define GLFW_INCLUDE_NONE
-//#include <GLFW/glfw3.h>
 
-const unsigned int WIDTH = 800;
-const unsigned int HEIGHT = 600;
+//#define STB_IMAGE_IMPLEMENTATION
+//#include "stb_image.h"
 
-const int SEGMENTS = 50;
+void cylinder()
+{
+    const double PI = 3.14159;
 
-const float RADIUS = 0.5f;
-const float HEIGHT_CYLINDER = 1.0f;
+    /* top triangle */
+    double i, resolution  = 0.1;
+    double height = 1;
+    double radius = 0.5;
 
-const double PI  = 3.141592653589793238463;
+    glPushMatrix();
+    glTranslatef(0, -0.5, 0);
 
+    glBegin(GL_TRIANGLE_FAN);
+        glTexCoord2f( 0.5, 0.5 );
+        glVertex3f(0, height, 0);  /* center */
+        for (i = 2 * PI; i >= 0; i -= resolution)
 
-void processInput(GLFWwindow* window) {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, true);
-	}
+        {
+            glTexCoord2f( 0.5f * cos(i) + 0.5f, 0.5f * sin(i) + 0.5f );
+            glVertex3f(radius * cos(i), height, radius * sin(i));
+        }
+        /* close the loop back to 0 degrees */
+        glTexCoord2f( 0.5, 0.5 );
+        glVertex3f(radius, height, 0);
+    glEnd();
+
+    /* bottom triangle: note: for is in reverse order */
+    glBegin(GL_TRIANGLE_FAN);
+        glTexCoord2f( 0.5, 0.5 );
+        glVertex3f(0, 0, 0);  /* center */
+        for (i = 0; i <= 2 * PI; i += resolution)
+        {
+            glTexCoord2f( 0.5f * cos(i) + 0.5f, 0.5f * sin(i) + 0.5f );
+            glVertex3f(radius * cos(i), 0, radius * sin(i));
+        }
+    glEnd();
+
+    /* middle tube */
+    glBegin(GL_QUAD_STRIP);
+        for (i = 0; i <= 2 * PI; i += resolution)
+        {
+            const float tc = ( i / (float)( 2 * PI ) );
+            glTexCoord2f( tc, 0.0 );
+            glVertex3f(radius * cos(i), 0, radius * sin(i));
+            glTexCoord2f( tc, 1.0 );
+            glVertex3f(radius * cos(i), height, radius * sin(i));
+        }
+        /* close the loop back to zero degrees */
+        glTexCoord2f( 0.0, 0.0 );
+        glVertex3f(radius, 0, 0);
+        glTexCoord2f( 0.0, 1.0 );
+        glVertex3f(radius, height, 0);
+    glEnd();
+
+    glPopMatrix();
 }
 
+GLuint tex;
+void init()
+{
+    //unsigned char data[] =
+    //{
+    //    128, 128, 128, 255,
+    //    255, 0, 0, 255,
+    //    0, 255, 0, 255,
+    //    0, 0, 255, 255,
+    //};
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-	glViewport(0, 0, width, height);
+    unsigned char data[] =
+    {
+        0, 0, 128, 255,
+        255, 0, 128, 255,
+        0, 255, 128, 0,
+        255, 0, 255, 255,
+    };
+
+    //added this
+    //int width, height, cnt;
+    //unsigned char *data = stbi_load("01.png", &width, &height, &cnt, 0);
+    
+
+    glGenTextures( 1, &tex );
+    glBindTexture( GL_TEXTURE_2D, tex );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+    glTexImage2D( GL_TEXTURE_2D, 0,GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
 }
 
-
-void generateCylinder(std::vector<float>& vertices, std::vector<unsigned int>& indices) {
-
-	for (int i = 0; i <= SEGMENTS; ++i) {
-		float angle = 2.0f * PI * i / SEGMENTS;
-		float x = RADIUS * std::cos(angle);
-		float z = RADIUS * std::sin(angle);
-
-		vertices.push_back(x);
-		vertices.push_back(HEIGHT_CYLINDER / 2.0f);
-		vertices.push_back(z);
-		vertices.push_back(x);
-		vertices.push_back(-HEIGHT_CYLINDER / 2.0f);
-		vertices.push_back(z);
-	}
-
-	for (int i = 0; i < SEGMENTS; ++i) {
-		indices.push_back(i * 2);
-		indices.push_back(i * 2 + 1);
-		indices.push_back((i * 2 + 2) % (SEGMENTS * 2));
-		indices.push_back(i * 2 + 1);
-		indices.push_back((i * 2 + 3) % (SEGMENTS * 2));
-		indices.push_back((i * 2 + 2) % (SEGMENTS * 2));	
-
-	
-	}
-
+float angle = 0;
+void timer( int value )
+{
+    angle += 6;
+        
+    glutPostRedisplay();
+    glutTimerFunc( 16, timer, 0 );
 }
 
+void display()
+{
+    glClearColor( 0, 0, 0, 1 );
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-int main() {
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    gluPerspective( 60, 1.0, 0.1, 100.0 );
 
-	//GLFWwindow* window;
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
+    glTranslatef( 0, 0, -5 );
 
-	if (!glfwInit()) {
-		return -1;
-	}
+    glEnable( GL_CULL_FACE );
+    glEnable( GL_DEPTH_TEST );
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION, MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION, MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glRotatef( angle, 0.2, 0.3, 0.1 );
 
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Octavian", nullptr, nullptr);
+    glEnable( GL_TEXTURE_2D );
+    glBindTexture( GL_TEXTURE_2D, tex );
+    cylinder();
 
-	if (!window) {
-		std::cerr << "Failed to create GLFW window!" << std::endl;
-		glfwTerminate();
-		return -1;	
-	}
+    glutSwapBuffers();
+}
 
-	glfwMakeContextCurrent(window);
-
-	if (!gladLoaderGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cerr << "Failed to initialize GLAD!" << std::endl;
-		return -1;
-	}
-
-
-	//if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-	//	std::cout << "couldn-t load opengl" << std::endl;
-	//	glfwTerminate();
-	//	return -1;
-	//}
-
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-
-	std::vector<float> vertices;
-	std::vector<unsigned int> indices;
-
-	generateCylinder(vertices, indices);
-
-	unsigned int VAO, VBO, EBO;
-
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
-
-	glVertextAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	glBindVertexArray(0);
-
-	glEnable(GL_DEPTH_TEST);
-
-
-
-
-
-	glClearColor(0.10f, 0.25f, 0.50f, 1.0f);
-
-	while (!glfwWindowShouldClose(window)) {
-		glfwPollEvents();
-
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		glfwSwapBuffers(window);
-	}
-
-	//std::cout << "Hello world" << std::endl;
-
-	glfwTerminate();
-
-	return 0;
+int main(int argc, char **argv)
+{
+    glutInit( &argc, argv );
+    glutInitDisplayMode( GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE );
+    glutInitWindowSize( 600, 600 );
+    glutCreateWindow( "GLUT" );
+    init();
+    glutDisplayFunc( display );
+    glutTimerFunc( 0, timer, 0 );
+    glutMainLoop();
+    return 0;
 }

@@ -17,10 +17,9 @@ add_executable(Octavian  ${SOURCE_DIR}/main.cpp ${LIB_DIR}/glad.c)
 target_include_directories(${PROJECT_NAME} PRIVATE ${INCLUDE_DIR})
 
 find_package(OpenGL REQUIRED)
+find_package(GLU)
 find_package(glfw3 REQUIRED)
-#find_package(glew REQUIRED)
 find_package(GLUT REQUIRED)
-
 find_package(GLEW REQUIRED)
 
 #find_library(GLEW_LIB glew REQUIRED)
@@ -29,7 +28,7 @@ include_directories(${GLEW_INCLUDE_DIRS} )
 include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS}) 
 
 
-target_link_libraries(${PROJECT_NAME} OpenGL::GL glfw GLUT::GLUT ${GLEW_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} OpenGL::GL glfw GLU GLUT::GLUT  ${GLEW_LIBRARIES})
 
 #include_directories(include)
 
