@@ -3,11 +3,26 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
-
+#include <vector>
+#include <cmath>
 //#define GLAD_GL_IMPLEMENTATION
 //#include <glad/gl.h>
 //#define GLFW_INCLUDE_NONE
 //#include <GLFW/glfw3.h>
+
+const unsigned int WIDTH = 800;
+const unsigned int HEIGHT = 600;
+
+const int SEGMENTS = 50;
+
+const float radius = 0.5f;
+const float HEIGHT_CYLINDER = 1.0f;
+
+void processInput(GLFWwindow* window) {
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		glfwSetWindowShouldClose(window, true);
+	}
+}
 
 int main() {
 
