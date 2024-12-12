@@ -1,2 +1,2 @@
-build/
-src/CMakeFiles
+build/*
+src/CMakeFiles/*
