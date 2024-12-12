@@ -46,7 +46,19 @@ void generateCylinder(std::vector<float>& vertices, std::vector<unsigned int>& i
 		vertices.push_back(x);
 		vertices.push_back(-HEIGHT_CYLINDER / 2.0f);
 		vertices.push_back(z);
-	}	
+	}
+
+	for (int i = 0; i < SEGMENTS; ++i) {
+		indices.push_back(i * 2);
+		indices.push_back(i * 2 + 1);
+		indices.push_back((i * 2 + 2) % (SEGMENTS * 2));
+		indices.push_back(i * 2 + 1);
+		indices.push_back((i * 2 + 3) % (SEGMENTS * 2));
+		indices.push_back((i * 2 + 2) % (SEGMENTS * 2));	
+
+	
+	}
+
 }
 
 
