@@ -2,8 +2,8 @@
 #include <GL/glut.h>
 #include <cmath>
 
-//#define STB_IMAGE_IMPLEMENTATION
-//#include "stb_image.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 void cylinder()
 {
@@ -73,35 +73,43 @@ void init()
     //    0, 0, 255, 255,
     //};
 
-    unsigned char data[] =
-    {
-        0, 0, 128, 255,
-        255, 0, 128, 255,
-        0, 255, 128, 0,
-        255, 0, 255, 255,
-    };
+    //unsigned char data[] =
+    //{
+    //    0, 0, 128, 255,
+    //    255, 0, 128, 255,
+    //    0, 255, 128, 0,
+    //    255, 0, 255, 255,
+    //};
 
     //added this
-    //int width, height, cnt;
-    //unsigned char *data = stbi_load("01.png", &width, &height, &cnt, 0);
+    int width, height, cnt;
+    unsigned char *data = stbi_load("01.png", &width, &height, &cnt, 0);
     
 
     glGenTextures( 1, &tex );
     glBindTexture( GL_TEXTURE_2D, tex );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+    // instead GL_REPEAT was GL_CLAMP_TO_EDGE 
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-    glTexImage2D( GL_TEXTURE_2D, 0,GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
+    //glTexImage2D( GL_TEXTURE_2D, 0,GL_RGBA, 2, 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
+
+    glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, cnt == 4 ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, data );
+
 }
 
 float angle = 0;
 void timer( int value )
 {
-    angle += 6;
+    angle += 3;
         
     glutPostRedisplay();
     glutTimerFunc( 16, timer, 0 );
+
+    //glutTimerFunc( 10, timer, 0);
+
+
 }
 
 void display()
@@ -111,7 +119,8 @@ void display()
 
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
-    gluPerspective( 60, 1.0, 0.1, 100.0 );
+    //gluPerspective( 60, 1.0, 0.1, 100.0 );
+    gluPerspective(60, 1.0, 0.1, 100.0);
 
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
@@ -120,7 +129,8 @@ void display()
     glEnable( GL_CULL_FACE );
     glEnable( GL_DEPTH_TEST );
 
-    glRotatef( angle, 0.2, 0.3, 0.1 );
+    //glRotatef( angle, 0.2, 0.3, 0.1 );
+    glRotatef(90, 0.1, 0.1, 0.1);
 
     glEnable( GL_TEXTURE_2D );
     glBindTexture( GL_TEXTURE_2D, tex );
@@ -137,7 +147,8 @@ int main(int argc, char **argv)
     glutCreateWindow( "GLUT" );
     init();
     glutDisplayFunc( display );
-    glutTimerFunc( 0, timer, 0 );
+    //glutTimerFunc( 0, timer, 0 );
+    glutTimerFunc( 10, timer, 0 );
     glutMainLoop();
     return 0;
 }
