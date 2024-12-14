@@ -5,17 +5,17 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-void cylinder()
+void cylinder(double pos)
 {
     const double PI = 3.14159;
 
     /* top triangle */
     double i, resolution  = 0.1;
-    double height = 1;
+    double height = 0.5;
     double radius = 0.5;
 
     glPushMatrix();
-    glTranslatef(0, -0.5, 0);
+    glTranslatef(0, pos, 0);
 
     glBegin(GL_TRIANGLE_FAN);
         glTexCoord2f( 0.5, 0.5 );
@@ -143,7 +143,7 @@ void display()
     int angleZ = 15.0f;
     //glRotatef( 90, 1, 0, 0 );
     glTranslatef( 0, 0, -1/2 );
-    glRotatef(90, 0.0f, 0.0f, 1.0f);
+    glRotatef(-90, 0.0f, 0.0f, 1.0f);
     glRotatef(angle, 0.0f, 1.0f, 0.0f);
     //glRotatef(angleX, 1.0f, 0.0f, 0.0f);
     //glRotatef(angleY, 0.0f, 1.0f, 0.0f);
@@ -151,7 +151,9 @@ void display()
 
     glEnable( GL_TEXTURE_2D );
     glBindTexture( GL_TEXTURE_2D, tex );
-    cylinder();
+    cylinder(-1);
+    cylinder(-0.5);
+    cylinder(1.5);
 
     glutSwapBuffers();
 }

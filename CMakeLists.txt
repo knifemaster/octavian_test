@@ -4,6 +4,7 @@ project(Octavian)
 
 set(CMAKE_CXX_STANDART 17)
 set(CMAKE_CXX_STANDART_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "-g")
 
 set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/src")
 
