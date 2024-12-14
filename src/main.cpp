@@ -27,7 +27,8 @@ void cylinder()
             glVertex3f(radius * cos(i), height, radius * sin(i));
         }
         /* close the loop back to 0 degrees */
-        glTexCoord2f( 0.5, 0.5 );
+        //uncomment
+	glTexCoord2f( 0.5, 0.5 );
         glVertex3f(radius, height, 0);
     glEnd();
 
@@ -47,7 +48,7 @@ void cylinder()
         for (i = 0; i <= 2 * PI; i += resolution)
         {
             const float tc = ( i / (float)( 2 * PI ) );
-            glTexCoord2f( tc, 0.0 );
+	    glTexCoord2f( tc, 0.0 );
             glVertex3f(radius * cos(i), 0, radius * sin(i));
             glTexCoord2f( tc, 1.0 );
             glVertex3f(radius * cos(i), height, radius * sin(i));
@@ -97,6 +98,8 @@ void init()
 
     glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, cnt == 4 ? GL_RGBA : GL_RGB, GL_UNSIGNED_BYTE, data );
 
+    stbi_image_free(data);
+
 }
 
 float angle = 0;
@@ -119,6 +122,8 @@ void display()
 
     glMatrixMode( GL_PROJECTION );
     glLoadIdentity();
+
+    //uncomment
     //gluPerspective( 60, 1.0, 0.1, 100.0 );
     gluPerspective(60, 1.0, 0.1, 100.0);
 
@@ -129,8 +134,20 @@ void display()
     glEnable( GL_CULL_FACE );
     glEnable( GL_DEPTH_TEST );
 
+    //uncomment
     //glRotatef( angle, 0.2, 0.3, 0.1 );
-    glRotatef(90, 0.1, 0.1, 0.1);
+    
+    //delete
+    int angleX = 45.0f;
+    int angleY = 30.0f;
+    int angleZ = 15.0f;
+    //glRotatef( 90, 1, 0, 0 );
+    glTranslatef( 0, 0, -1/2 );
+    glRotatef(90, 0.0f, 0.0f, 1.0f);
+    glRotatef(angle, 0.0f, 1.0f, 0.0f);
+    //glRotatef(angleX, 1.0f, 0.0f, 0.0f);
+    //glRotatef(angleY, 0.0f, 1.0f, 0.0f);
+    //glRotatef(angleZ, 0.0f, 0.0f, 1.0f);
 
     glEnable( GL_TEXTURE_2D );
     glBindTexture( GL_TEXTURE_2D, tex );
@@ -144,7 +161,7 @@ int main(int argc, char **argv)
     glutInit( &argc, argv );
     glutInitDisplayMode( GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE );
     glutInitWindowSize( 600, 600 );
-    glutCreateWindow( "GLUT" );
+    glutCreateWindow( "Octavian" );
     init();
     glutDisplayFunc( display );
     //glutTimerFunc( 0, timer, 0 );
