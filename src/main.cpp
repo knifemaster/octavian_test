@@ -8,6 +8,7 @@
 
 
 
+
 struct Point {
 	GLint x;
 	GLint y;
@@ -137,6 +138,21 @@ float angle = 0;
 float delta = 3;
 void timer( int value )
 {
+    /*
+    if (value == 1) {
+        delta = 3;
+        std::cout << value << std::endl;
+    }
+    if (value == 2) {
+        delta = 6;
+        std::cout << value << std::endl;
+    }
+    if (value == 3) {
+        delta = 12;
+        std::cout << value << std::endl;
+    }
+    */
+
     angle += delta;
         
     glutPostRedisplay();
@@ -205,11 +221,27 @@ void display()
     //glRotatef( 90, 1, 0, 0 );
     glTranslatef( 0, 0, -1/2 );
     glRotatef(-90, 0.0f, 0.0f, 1.0f);
+    // uncomment this
     glRotatef(angle, 0.0f, 1.0f, 0.0f);
+    
     //glRotatef(angleX, 1.0f, 0.0f, 0.0f);
     //glRotatef(angleY, 0.0f, 1.0f, 0.0f);
     //glRotatef(angleZ, 0.0f, 0.0f, 1.0f);
 
+/*
+    if (delta == 3) {
+        glRotatef(0, 0.0f, 1.0f, 0.0f);
+    
+    }
+    if (delta == 6) {
+        glRotatef(30, 0.0f, 1.0f, 0.0f);
+    
+    }
+    if (delta == 12) {
+        glRotatef(-angle, 0.0f, 1.0f, 0.0f);
+    
+    }
+*/
     glEnable( GL_TEXTURE_2D );
     glBindTexture( GL_TEXTURE_2D, tex );
     cylinder(0.3333);
@@ -229,9 +261,12 @@ int main(int argc, char **argv)
     glutDisplayFunc( display );
     
     glutMouseFunc(myMouseFunc);
-    //glutTimerFunc( 0, timer, 0 );
-    glutTimerFunc( 10, timer, 0 );
+ //   glutTimerFunc( 0, timer, 0 );
+    glutTimerFunc( 10, timer, 0);
+//    glutTimerFunc( 10, timer, 1 );
+//    glutTimerFunc( 10, timer, 2 );
     glutMainLoop();
     return 0;
 }
+
 
