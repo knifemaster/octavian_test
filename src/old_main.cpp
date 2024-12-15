@@ -1,40 +1,9 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <cmath>
-#include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-
-
-
-struct Point {
-	GLint x;
-	GLint y;
-};
-
-Point p1, p2;
-
-struct GLColor {
-	GLfloat red;
-	GLfloat green;
-	GLfloat blue;
-};
-
-GLColor colors[6] = {
-	{0.0f, 0.0f, 0.0f},	// Black
-	{1.0f, 0.0f, 0.0f},	// Red
-	{0.0f, 1.0f, 0.0f}, // Green
-	{0.0f, 0.0f, 1.0f}, // Blue
-	{1.0f, 1.0f, 0.0f}, // Yellow
-	{1.0f, 0.0f, 1.0f}	// Purple
-};
-
-GLColor color = colors[0]; // Default: Black
-
-
-
-
 
 void cylinder(double pos)
 {
@@ -134,10 +103,9 @@ void init()
 }
 
 float angle = 0;
-float delta = 3;
 void timer( int value )
 {
-    angle += delta;
+    angle += 3;
         
     glutPostRedisplay();
     glutTimerFunc( 16, timer, 0 );
@@ -146,35 +114,6 @@ void timer( int value )
 
 
 }
-
-void myMouseFunc(int button, int state, int x, int y)
-{
-    Point pC = {x, y};	
-
-	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		p1.x = x;
-		p1.y = 480 - y;
-	}
-	else if(button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-		p2.x = x;
-		p2.y = 480 - y;
-
-        //angle = 0;
-        delta = 0;
-        pC.x = x;
-        pC.y = p2.y;
-		std::cout << p2.x << " " << p2.y << std::endl;
-        //draw_ellipse(pC, 60.0f, 200.0f);
-	}
-
-    if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP) {
-        delta = 3;
-    }
-
-}
-
-
-
 
 void display()
 {
@@ -227,11 +166,8 @@ int main(int argc, char **argv)
     glutCreateWindow( "Octavian" );
     init();
     glutDisplayFunc( display );
-    
-    glutMouseFunc(myMouseFunc);
     //glutTimerFunc( 0, timer, 0 );
     glutTimerFunc( 10, timer, 0 );
     glutMainLoop();
     return 0;
 }
-
