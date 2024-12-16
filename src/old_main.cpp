@@ -1,9 +1,70 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <cmath>
+#include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
+
+
+
+struct Point {
+	GLint x;
+	GLint y;
+};
+
+Point p1, p2;
+
+struct GLColor {
+	GLfloat red;
+	GLfloat green;
+	GLfloat blue;
+};
+
+GLColor colors[6] = {
+	{0.0f, 0.0f, 0.0f},	// Black
+	{1.0f, 0.0f, 0.0f},	// Red
+	{0.0f, 1.0f, 0.0f}, // Green
+	{0.0f, 0.0f, 1.0f}, // Blue
+	{1.0f, 1.0f, 0.0f}, // Yellow
+	{1.0f, 0.0f, 1.0f}	// Purple
+};
+
+GLColor color = colors[0]; // Default: Black
+
+
+
+//added
+float buttonX1 = -0.2f, buttonX2 = 0.2f;
+float buttonY1 = -0.1f, buttonY2 = 0.1f;
+
+// Флаг состояния кнопки
+bool buttonPressed = false;
+
+void drawButton() {
+    // Цвет кнопки зависит от ее состояния
+    if (buttonPressed) {
+        glColor3f(0.0f, 1.0f, 0.0f); // Зеленая кнопка
+    } else {
+        glColor3f(1.0f, 0.0f, 0.0f); // Красная кнопка
+    }
+
+    // Рисуем прямоугольник (кнопку)
+    glBegin(GL_QUADS);
+        glVertex2f(buttonX1, buttonY1);
+        glVertex2f(buttonX2, buttonY1);
+        glVertex2f(buttonX2, buttonY2);
+        glVertex2f(buttonX1, buttonY2);
+    glEnd();
+}
+
+
+
+
+
+
+
 
 void cylinder(double pos)
 {
@@ -103,9 +164,25 @@ void init()
 }
 
 float angle = 0;
+float delta = 3;
 void timer( int value )
 {
-    angle += 3;
+    /*
+    if (value == 1) {
+        delta = 3;
+        std::cout << value << std::endl;
+    }
+    if (value == 2) {
+        delta = 6;
+        std::cout << value << std::endl;
+    }
+    if (value == 3) {
+        delta = 12;
+        std::cout << value << std::endl;
+    }
+    */
+
+    angle += delta;
         
     glutPostRedisplay();
     glutTimerFunc( 16, timer, 0 );
@@ -114,6 +191,41 @@ void timer( int value )
 
 
 }
+
+void myMouseFunc(int button, int state, int x, int y)
+{
+    Point pC = {x, y};	
+
+	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		p1.x = x;
+		p1.y = 480 - y;
+	}
+	else if(button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
+		p2.x = x;
+		p2.y = 480 - y;
+
+        //angle = 0;
+        delta = 0;
+        pC.x = x;
+        pC.y = p2.y;
+		std::cout << p2.x << " " << p2.y << std::endl;
+        //draw_ellipse(pC, 60.0f, 200.0f);
+	}
+
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP) {
+        delta += 3;
+    }
+
+}
+
+
+void display_button() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    drawButton();
+    glutSwapBuffers();
+}
+
+
 
 void display()
 {
@@ -144,16 +256,36 @@ void display()
     //glRotatef( 90, 1, 0, 0 );
     glTranslatef( 0, 0, -1/2 );
     glRotatef(-90, 0.0f, 0.0f, 1.0f);
+    // uncomment this
     glRotatef(angle, 0.0f, 1.0f, 0.0f);
+    
     //glRotatef(angleX, 1.0f, 0.0f, 0.0f);
     //glRotatef(angleY, 0.0f, 1.0f, 0.0f);
     //glRotatef(angleZ, 0.0f, 0.0f, 1.0f);
 
+/*
+    if (delta == 3) {
+        glRotatef(0, 0.0f, 1.0f, 0.0f);
+    
+    }
+    if (delta == 6) {
+        glRotatef(30, 0.0f, 1.0f, 0.0f);
+    
+    }
+    if (delta == 12) {
+        glRotatef(-angle, 0.0f, 1.0f, 0.0f);
+    
+    }
+*/
     glEnable( GL_TEXTURE_2D );
     glBindTexture( GL_TEXTURE_2D, tex );
+    //added
+
+    
     cylinder(0.3333);
     cylinder(0.6666);
     cylinder(1);
+    drawButton();
 
     glutSwapBuffers();
 }
@@ -166,8 +298,15 @@ int main(int argc, char **argv)
     glutCreateWindow( "Octavian" );
     init();
     glutDisplayFunc( display );
-    //glutTimerFunc( 0, timer, 0 );
-    glutTimerFunc( 10, timer, 0 );
+    
+    
+    glutMouseFunc(myMouseFunc);
+ //   glutTimerFunc( 0, timer, 0 );
+    glutTimerFunc( 10, timer, 0);
+//    glutTimerFunc( 10, timer, 1 );
+//    glutTimerFunc( 10, timer, 2 );
     glutMainLoop();
     return 0;
 }
+
+
