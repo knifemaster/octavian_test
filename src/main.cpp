@@ -9,7 +9,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
-
+#include <thread>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -66,9 +66,9 @@ bool get_character_bitmap(char ch, float font_size, FT_Bitmap* bitmap) {
     return true;
 }
 
-void initTexture() {
+void initTexture(char character) {
     
-    if (!get_character_bitmap('1', 100, &bitmap)) {
+    if (!get_character_bitmap(character, 100, &bitmap)) {
         printf("Rendering character failed\n");
         exit(1);
     }
@@ -87,6 +87,7 @@ void initTexture() {
 }
 
 
+float angle = 0;
 
 struct Point {
 	GLint x;
@@ -112,15 +113,33 @@ GLColor colors[6] = {
 
 GLColor color = colors[0]; // Default: Black
 
+bool isAngleInRange(double angle, double rangeStart, double rangeEnd) {
+    double m_angle = fmod(angle, 360);
+    if (m_angle < 0) {
+        m_angle += 360.0;
+    }
 
-//void drawCube(float x, float y, float z) {
-//    glPushMatrix();
-//    glTranslatef(x, y, z);
-//    glutSolidCube(5);
-//    glPopMatrix();
+    rangeStart = fmod(rangeStart, 360.0);
 
-//}
+    if (rangeStart < 0) {
+        rangeStart += 360.0;
+    }
 
+    rangeEnd = fmod(rangeEnd, 360.0);
+    if (rangeEnd < 0) {
+        rangeEnd += 360.0;
+    }
+
+    if  (rangeStart <= rangeEnd) {
+        return m_angle >= rangeStart && m_angle <= rangeEnd;
+    }
+    else {
+        return m_angle >= rangeStart || m_angle <= rangeEnd;
+
+    }
+
+
+}
 
 void cylinder(double pos)
 {
@@ -226,14 +245,18 @@ void init()
 
 }
 
-float angle = 0;
 float delta = 3;
 void timer( int value )
 {
     angle += delta;
-        
+
+ //   std::cout << "angle" << angle << std::endl;
+
     glutPostRedisplay();
-    glutTimerFunc( 16, timer, 0 );
+    //glutTimerFunc( 16, timer, 0 );
+
+    glutTimerFunc(30, timer, 0);
+
 
 }
 
@@ -241,7 +264,24 @@ void MouseEvent(int button, int state, int x, int y)
 {
     Point pC = {x, y};	
 
+    using namespace std::chrono_literals;
+
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    
+            initTexture('D');
+
+            //if (int(angle) % 360 == 0) {
+
+            //}
+            if (isAngleInRange(angle, 350, 370)) {
+                delta = 0;
+            }
+
+
+            std::cout << "MouseEvent" << angle << std::endl;
+            //glutPostRedisplay();
+
+        
         // нажатие кнопки мыши
     }
 	else if(button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
@@ -264,6 +304,7 @@ void reshape(int width, int height) {
 
 void display()
 {
+
     glClearColor( 0, 0, 0, 1 );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -353,7 +394,7 @@ int main(int argc, char **argv)
     glutCreateWindow( "Octavian" );
     init();
     
-    initTexture();
+    initTexture('B');
     
     glutDisplayFunc( display );
    
