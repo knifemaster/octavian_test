@@ -22,14 +22,16 @@ find_package(GLU)
 find_package(glfw3 REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(Freetype REQUIRED)
+find_package(glm REQUIRED)
 
 #find_library(GLEW_LIB glew REQUIRED)
 
 include_directories(${GLEW_INCLUDE_DIRS} )
 include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS}) 
+include_directories(${FREETYPE_INCLUDE_DIR_freetype2})
 
-
-target_link_libraries(${PROJECT_NAME} OpenGL::GL glfw GLU GLUT::GLUT  ${GLEW_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} glm::glm Freetype::Freetype OpenGL::GL glfw GLU GLUT::GLUT  ${GLEW_LIBRARIES})
 
 #include_directories(include)
 
