@@ -25,7 +25,6 @@ find_package(GLEW REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(glm REQUIRED)
 
-#find_library(GLEW_LIB glew REQUIRED)
 
 include_directories(${GLEW_INCLUDE_DIRS} )
 include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS}) 
@@ -33,14 +32,4 @@ include_directories(${FREETYPE_INCLUDE_DIR_freetype2})
 
 target_link_libraries(${PROJECT_NAME} glm::glm Freetype::Freetype OpenGL::GL glfw GLU GLUT::GLUT  ${GLEW_LIBRARIES})
 
-#include_directories(include)
 
-#find_package(OpenGL REQUIRED COMPONENTS OpenGL)
-
-#find_package(GLUT REQUIRED)
-
-#add_dependencies(Octavian OpenGL::OpenGL)
-
-#include_directories(${GLUT_INCLUDE_DIRS})
-
-#target_link_libraries(Octavian OpenGL::OpenGL ${GLUT_LIBRARY})

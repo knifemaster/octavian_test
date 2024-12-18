@@ -1,42 +1,15 @@
-#include <ft2build.h>
-#include <freetype/freetype.h>
-#include <freetype/ftglyph.h>
-#include <freetype/ftoutln.h>
-#include <freetype/fttrigon.h>
-
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <cmath>
 #include <iostream>
-
+#include <vector>
+#include <thread>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 
-namespace freetype {
- 
-// Inside Of This Namespace, Give Ourselves The Ability
-// To Write Just "vector" Instead Of "std::vector"
-using std::vector;
- 
-// Ditto For String.
-using std::string;
- 
-// This Holds All Of The Information Related To Any
-// FreeType Font That We Want To Create. 
-struct font_data {
-    float h;                                        // Holds The Height Of The Font.
-    GLuint * textures;                                  // Holds The Texture Id's
-    GLuint list_base;                                   // Holds The First Display List Id
- 
-    // The Init Function Will Create A Font With
-    // The Height h From The File fname.
-    void init(const char * fname, unsigned int h);
- 
-    // Free All The Resources Associated With The Font.
-        void clean();
-};
 
+float angle = 0;
 
 struct Point {
 	GLint x;
@@ -62,15 +35,33 @@ GLColor colors[6] = {
 
 GLColor color = colors[0]; // Default: Black
 
+bool isAngleInRange(double angle, double rangeStart, double rangeEnd) {
+    double m_angle = fmod(angle, 360);
+    if (m_angle < 0) {
+        m_angle += 360.0;
+    }
 
-//void drawCube(float x, float y, float z) {
-//    glPushMatrix();
-//    glTranslatef(x, y, z);
-//    glutSolidCube(5);
-//    glPopMatrix();
+    rangeStart = fmod(rangeStart, 360.0);
 
-//}
+    if (rangeStart < 0) {
+        rangeStart += 360.0;
+    }
 
+    rangeEnd = fmod(rangeEnd, 360.0);
+    if (rangeEnd < 0) {
+        rangeEnd += 360.0;
+    }
+
+    if  (rangeStart <= rangeEnd) {
+        return m_angle >= rangeStart && m_angle <= rangeEnd;
+    }
+    else {
+        return m_angle >= rangeStart || m_angle <= rangeEnd;
+
+    }
+
+
+}
 
 void cylinder(double pos)
 {
@@ -128,6 +119,14 @@ void cylinder(double pos)
 
     glEnd();
 
+    //  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//remove this
+  
+
+
+///
+
+
      glPopMatrix();
 }
 
@@ -153,14 +152,18 @@ void init()
 
 }
 
-float angle = 0;
 float delta = 3;
-void timer( int value )
+void update( int value )
 {
     angle += delta;
-        
+
+ //   std::cout << "angle" << angle << std::endl;
+
     glutPostRedisplay();
-    glutTimerFunc( 16, timer, 0 );
+    //glutTimerFunc( 16, timer, 0 );
+
+    glutTimerFunc(30, update, 0);
+
 
 }
 
@@ -168,13 +171,28 @@ void MouseEvent(int button, int state, int x, int y)
 {
     Point pC = {x, y};	
 
+    using namespace std::chrono_literals;
+
 	if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    
+          
+            //if (int(angle) % 360 == 0) {
+
+            //}
+            // если наш угол между 350 и 370 градусов
+            if (isAngleInRange(angle, 350, 370)) {
+                delta -= 3;
+            }
+
+
+            std::cout << "MouseEvent" << angle << std::endl;
+            //glutPostRedisplay();
+
+        
         // нажатие кнопки мыши
     }
 	else if(button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-    //    delta = 0;
         // отжатие кнопки мыши
-        //draw_ellipse(pC, 60.0f, 200.0f);
 	}
 
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP) {
@@ -184,10 +202,16 @@ void MouseEvent(int button, int state, int x, int y)
 
 }
 
+// remove reshape
+void reshape(int width, int height) {
+    glViewport(0, 0, width, height);
+    glutPostRedisplay();
+}
 
 
 void display()
 {
+
     glClearColor( 0, 0, 0, 1 );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
@@ -276,9 +300,12 @@ int main(int argc, char **argv)
     glutInitWindowSize( 600, 600 );
     glutCreateWindow( "Octavian" );
     init();
-    glutDisplayFunc( display );
     
-
+   
+    
+    glutDisplayFunc( display );
+   
+        
     int subMenu = glutCreateMenu(subMenuHandler);
     glutAddMenuEntry("status", 0);
 
@@ -290,10 +317,12 @@ int main(int argc, char **argv)
 
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 
+
+
     
     glutMouseFunc(MouseEvent);
  //   glutTimerFunc( 0, timer, 0 );
-    glutTimerFunc( 1000, timer, 0);
+    glutTimerFunc( 1000, update, 0);
 //    glutTimerFunc( 10, timer, 1 );
 //    glutTimerFunc( 10, timer, 2 );
     glutMainLoop();
