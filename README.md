@@ -16,7 +16,7 @@ sudo apt-get install libglfw3-dev
 
 установить opengl
 sudo apt install libx11-dev libxext-dev libopengl-dev
-sudo apt-get install libgl1-mesa-dev libglu1-mesa-dev
+sudo apt-gett install libgl1-mesa-dev libglu1-mesa-dev
 sudo apt install freeglut3-dev
 sudo apt-get install libglew-dev
 sudo apt-get install libglu-dev
@@ -26,14 +26,15 @@ sudo apt-get libfreetype-dev
 sudo apt-get install glslang-tools
 
 перейдите в директорию octavian_test build
+
 cd octavian_test
-cоздайте директорию build
+создайте директорию build
 mkdir build
 cd build
 
-введите команды для сборки
+введите команды для сборки проекта
 cmake ..
-cкомпилируйте 
+скомпилируйте
 make
 
 в директории build будет исполняемый файл Octavian

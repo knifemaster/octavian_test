@@ -194,7 +194,7 @@ void cylinder(double pos)
     // top triangle 
     double i, resolution  = 0.1;
     double height = 0.5;
-    double radius = 0.5;
+    double radius = 3.5;
 
     glPushMatrix();
     glTranslatef(0, pos, 0);
@@ -389,10 +389,12 @@ void display()
     cylinder(0.6666);
     cylinder(1);
  
+ 
     //renderButton();
     
     glutSwapBuffers();
 
+    
 
 }
 
@@ -433,7 +435,15 @@ void mainMenuHandler(int choice) {
 
 }
 
-
+void keyboard (unsigned char key, int x, int y)
+{
+    switch (key) {
+        case 'd': std::cout << "->" << std::endl; break;//xr++; break;
+        case 'a': std::cout << "<-" << std::endl; break;//xr--; break;
+        case 'w': std::cout << "^" << std::endl; break; //angleX -= 1.0f; break;
+        case 's': std::cout << "v" << std::endl; break; //angleX += 1.0f; break;
+    }
+}
 
 int main(int argc, char **argv)
 {
@@ -463,8 +473,8 @@ int main(int argc, char **argv)
 
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 
-
     glutMouseFunc(MouseEvent);
+    glutKeyboardFunc(keyboard);
     glutTimerFunc( 10, update, 0);
 
     glutMainLoop();

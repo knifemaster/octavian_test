@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/Octavian.dir/src/main.cpp.o CMakeFiles/Octavian.dir/lib/glad.c.o -o Octavian  /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib/x86_64-linux-gnu/libGL.so /usr/lib/x86_64-linux-gnu/libglfw.so.3.3 -lGLU /usr/lib/x86_64-linux-gnu/libglut.so /usr/lib/x86_64-linux-gnu/libGLEW.so /usr/lib/x86_64-linux-gnu/libXmu.so /usr/lib/x86_64-linux-gnu/libXi.so 

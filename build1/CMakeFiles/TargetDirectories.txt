@@ -1,0 +1,3 @@
+/home/emil/octavian_test/build/CMakeFiles/Octavian.dir
+/home/emil/octavian_test/build/CMakeFiles/edit_cache.dir
+/home/emil/octavian_test/build/CMakeFiles/rebuild_cache.dir
